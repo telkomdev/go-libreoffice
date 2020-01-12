@@ -1,4 +1,6 @@
 # LibreOffice library for Go
+
+Assuming <a href="https://www.libreoffice.org/">LibreOffice</a> is installed on your machine
  
 ### Note
-Not ready for production
+Currently not ready for production
