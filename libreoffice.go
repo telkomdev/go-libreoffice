@@ -38,9 +38,7 @@ func command(tmpFileIn, tempDir, outputType string) error {
 	return nil
 }
 
-// DocxToPdf func will convert Doc or Docx to PDF
-func DocxToPdf(in io.Reader, out io.Writer) error {
-
+func execute(in io.Reader, out io.Writer, outputType string) error {
 	tempDir := os.TempDir()
 	inBuffer := make([]byte, 16384)
 
@@ -52,7 +50,7 @@ func DocxToPdf(in io.Reader, out io.Writer) error {
 	// cleanup
 	defer func() {
 		os.Remove(tmpFileIn.Name())
-		os.Remove(fmt.Sprintf("%s.pdf", tmpFileIn.Name()))
+		os.Remove(fmt.Sprintf("%s.%s", tmpFileIn.Name(), outputType))
 	}()
 
 	for {
@@ -71,12 +69,12 @@ func DocxToPdf(in io.Reader, out io.Writer) error {
 		}
 	}
 
-	err = command(tmpFileIn.Name(), tempDir, PDFType)
+	err = command(tmpFileIn.Name(), tempDir, outputType)
 	if err != nil {
 		return err
 	}
 
-	inData, err := ioutil.ReadFile(fmt.Sprintf("%s.pdf", tmpFileIn.Name()))
+	inData, err := ioutil.ReadFile(fmt.Sprintf("%s.%s", tmpFileIn.Name(), outputType))
 	if err != nil {
 		return err
 	}
@@ -92,4 +90,14 @@ func DocxToPdf(in io.Reader, out io.Writer) error {
 	}
 
 	return nil
+}
+
+// ToPdf func will convert any type to PDF
+func ToPdf(in io.Reader, out io.Writer) error {
+	return execute(in, out, PDFType)
+}
+
+// ToHTML func will convert any type to HTML
+func ToHTML(in io.Reader, out io.Writer) error {
+	return execute(in, out, HTMLType)
 }
