@@ -15,7 +15,28 @@ const (
 	ConvertToOption        = "--convert-to"
 	OutDirOption           = "--outdir"
 	PDFType                = "pdf"
+	HTMLType               = "html"
 )
+
+func command(tmpFileIn, tempDir, outputType string) error {
+	cmd := exec.Command(LibreOfficeBaseCommand, HeadlessOption, ConvertToOption, outputType, tmpFileIn, OutDirOption, tempDir)
+
+	var (
+		cmdOut, cmdErr bytes.Buffer
+	)
+	cmd.Stdout = &cmdOut
+	cmd.Stderr = &cmdErr
+
+	fmt.Println(fmt.Sprintf("stdout : %s", cmdOut.String()))
+	fmt.Println(fmt.Sprintf("stderr : %s", cmdErr.String()))
+
+	err := cmd.Run()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 
 // DocxToPdf func will convert Doc or Docx to PDF
 func DocxToPdf(in io.Reader, out io.Writer) error {
@@ -50,11 +71,7 @@ func DocxToPdf(in io.Reader, out io.Writer) error {
 		}
 	}
 
-	cmd := exec.Command(LibreOfficeBaseCommand, HeadlessOption, ConvertToOption, PDFType, tmpFileIn.Name(), OutDirOption, tempDir)
-	err = cmd.Run()
-	var cmdOut bytes.Buffer
-	cmd.Stdout = &cmdOut
-	fmt.Println(cmdOut.String())
+	err = command(tmpFileIn.Name(), tempDir, PDFType)
 	if err != nil {
 		return err
 	}
