@@ -1,10 +1,4 @@
-.PHONY : test build clean format docker-build
-
-build:
-	go build github.com/telkomdev/go-libreoffice/cmd/golo
-
-docker-build:
-	docker build -t golo .
+.PHONY : test clean format
 
 test:
 	go test ./...
