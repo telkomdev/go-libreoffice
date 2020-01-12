@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 const (
@@ -15,7 +16,8 @@ const (
 	ConvertToOption        = "--convert-to"
 	OutDirOption           = "--outdir"
 	PDFType                = "pdf"
-	HTMLType               = "html"
+	HTMLType               = "html:HTML"
+	TEXTType               = "txt:Text"
 )
 
 func command(tmpFileIn, tempDir, outputType string) error {
@@ -50,7 +52,7 @@ func execute(in io.Reader, out io.Writer, outputType string) error {
 	// cleanup
 	defer func() {
 		os.Remove(tmpFileIn.Name())
-		os.Remove(fmt.Sprintf("%s.%s", tmpFileIn.Name(), outputType))
+		os.Remove(fmt.Sprintf("%s.%s", tmpFileIn.Name(), strings.Split(outputType, ":")[0]))
 	}()
 
 	for {
@@ -74,7 +76,7 @@ func execute(in io.Reader, out io.Writer, outputType string) error {
 		return err
 	}
 
-	inData, err := ioutil.ReadFile(fmt.Sprintf("%s.%s", tmpFileIn.Name(), outputType))
+	inData, err := ioutil.ReadFile(fmt.Sprintf("%s.%s", tmpFileIn.Name(), strings.Split(outputType, ":")[0]))
 	if err != nil {
 		return err
 	}
@@ -100,4 +102,9 @@ func ToPdf(in io.Reader, out io.Writer) error {
 // ToHTML func will convert any type to HTML
 func ToHTML(in io.Reader, out io.Writer) error {
 	return execute(in, out, HTMLType)
+}
+
+// ToTEXT func will convert any type to TEXT
+func ToTEXT(in io.Reader, out io.Writer) error {
+	return execute(in, out, TEXTType)
 }
