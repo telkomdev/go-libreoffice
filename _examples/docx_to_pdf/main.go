@@ -7,7 +7,7 @@ import (
 	"github.com/telkomdev/go-libreoffice"
 )
 
-// docker run --rm -v /Users/wuriyanto/Documents/go-projects/go-libreoffice/data/:/usr/app/data/ golo
+// docker run --rm -v /Users/wuriyanto/Documents/go-projects/go-libreoffice/_examples/docx_to_pdf/data/:/usr/app/data/ -e INPUT_FILE_NAME=hello.txt golo-ex-docxtopdf
 func main() {
 	println("golo (Go LibreOffice)")
 
