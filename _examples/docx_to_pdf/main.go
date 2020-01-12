@@ -7,51 +7,71 @@ import (
 	"github.com/telkomdev/go-libreoffice"
 )
 
+// docker run --rm -v /Users/wuriyanto/Documents/go-projects/go-libreoffice/data/:/usr/app/data/ golo
 func main() {
 	println("golo (Go LibreOffice)")
-	// println(os.TempDir())
 
-	// content := []byte("temporary file's content")
-	// tmpfile, err := ioutil.TempFile("", "example")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	args := os.Args
+	if len(args) < 2 {
+		fmt.Println("required at least one argument")
+		os.Exit(1)
+	}
 
-	// defer os.Remove(tmpfile.Name()) // clean up
-
-	// if _, err := tmpfile.Write(content); err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// println(fmt.Sprintf("%s.pdf", tmpfile.Name()))
-
-	// if err := tmpfile.Close(); err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	docx, err := os.Open("mydoc.docx")
+	docx, err := os.Open(args[1])
 	if err != nil {
 		fmt.Println("error open file", err.Error())
 		os.Exit(1)
 	}
 
-	pdfOut, err := os.Create("data/out.pdf")
+	// pdfOut, err := os.Create("data/out_pdf.pdf")
+	// if err != nil {
+	// 	fmt.Println("error create file", err.Error())
+	// 	os.Exit(1)
+	// }
+
+	htmlOut, err := os.Create("data/out_html.html")
 	if err != nil {
 		fmt.Println("error create file", err.Error())
 		os.Exit(1)
 	}
 
+	// textOut, err := os.Create("data/out_text.txt")
+	// if err != nil {
+	// 	fmt.Println("error create file", err.Error())
+	// 	os.Exit(1)
+	// }
+
 	defer func() {
 		docx.Close()
 	}()
 
+	// defer func() {
+	// 	pdfOut.Close()
+	// }()
+
 	defer func() {
-		pdfOut.Close()
+		htmlOut.Close()
 	}()
 
-	err = libreoffice.DocxToPdf(docx, pdfOut)
+	// defer func() {
+	// 	textOut.Close()
+	// }()
+
+	// err = libreoffice.ToPdf(docx, pdfOut)
+	// if err != nil {
+	// 	fmt.Println("error convert file to pdf", err.Error())
+	// 	os.Exit(1)
+	// }
+
+	err = libreoffice.ToHTML(docx, htmlOut)
 	if err != nil {
-		fmt.Println("error convert file", err.Error())
+		fmt.Println("error convert file html", err.Error())
 		os.Exit(1)
 	}
+
+	// err = libreoffice.ToTEXT(docx, textOut)
+	// if err != nil {
+	// 	fmt.Println("error convert file text", err.Error())
+	// 	os.Exit(1)
+	// }
 }
